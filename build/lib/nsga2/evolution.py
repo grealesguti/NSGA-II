@@ -18,10 +18,11 @@ class Evolution:
             self.utils.calculate_crowding_distance(front)
         children = self.utils.create_children(self.population)
         returned_population = None
-        self.population.RootWrite()
+        #self.population.RootWrite()
         for i in range(self.num_of_generations):
             print("### Generation: ",i)
             self.population.extend(children)
+            self.population.RootWrite(Gen=i)
             self.utils.fast_nondominated_sort(self.population)
             new_population = Population()
             front_num = 0

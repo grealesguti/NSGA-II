@@ -8,6 +8,13 @@ This implementation can be used to solve multivariate (more than one dimensions)
 * Change the crossover operator to Simulated Binary Crossover.
 * Change the mutation operator to Polynomial Mutation.
 
+## Installation
+
+* Required packages
+-ROOT
+
+python setup.py install
+
 ## Usage
 1. Class **Problem**
 
