@@ -1,10 +1,11 @@
 from nsga2.population import Population
 import random
+import ROOT
 
 class NSGA2Utils:
 
     def __init__(self, problem, num_of_individuals=100,
-                 num_of_tour_particips=2, tournament_prob=0.9, crossover_param=2, mutation_param=5, TierII=0):
+                 num_of_tour_particips=2, tournament_prob=0.9, crossover_param=2, mutation_param=5, TierII=0, init=""):
 
         self.problem = problem
         self.num_of_individuals = num_of_individuals
@@ -13,8 +14,16 @@ class NSGA2Utils:
         self.crossover_param = crossover_param
         self.mutation_param = mutation_param
         self.TierII = TierII
+        self.init = init
 
     def create_initial_population(self):
+        if(init==""):
+            population = create_random_population(self)
+        else:
+            population = create_root_population(self)
+        return population
+
+    def create_random_population(self):
         population = Population()
         for _ in range(self.num_of_individuals):
             individual = self.problem.generate_individual()
@@ -22,10 +31,43 @@ class NSGA2Utils:
         feat = [child.features for child in population.population]
         if self.TierII==1:
             print("TierII Launch jobs")
-            # self.TierIIJobs(feat)
+            # self.TierIIJobs(feat) # launch jobs and monitor
         for indv in population.population:        
             self.problem.calculate_objectives(indv)
         return population
+
+    def create_root_population(self):
+        f = ROOT.TFile(self.init,"READ")
+        tree_pop = f.Get("tPopulation")
+        tree_obj = f.Get("tObjectives")
+        nIndv = self.num_of_individuals
+        nFeat = self.problem.num_of_variables
+        nObj = self.problem.num_of_objectives
+
+        feat = [iev.features for iev in tree_pop]
+        idv_feat = [iev.ind for iev in tree_pop]
+        obj = [iev.objectives for iev in tree_obj]
+        idv_obj = [iev.ind for iev in tree_obj]
+        pop = Population()
+        i=0
+        j=0
+        for _ in range(nIndv):
+                individual = Individual()
+                #individual.features = [x for x in feat[i:i+nFeat]]
+                arr=[]            
+                for i in range(nFeat):
+                    arr.append(feat[j*nFeat+i])
+                individual.features=arr            
+                arr=[]
+                for i in range(nObj):
+                    arr.append(obj[j*nObj+i])
+                    #individual.objectives = obj[j*nIndv+i]
+                individual.objectives=arr    
+                i=i+nFeat
+                j+=1
+                pop.append(individual)
+        f.Close()
+        return pop
 
     def fast_nondominated_sort(self, population):
         population.fronts = [[]]
