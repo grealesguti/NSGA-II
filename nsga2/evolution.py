@@ -20,9 +20,10 @@ class Evolution:
         returned_population = None
         #self.population.RootWrite()
         for i in range(self.num_of_generations):
-            print("### Generation: ",i)
+            print("### Generation: ",i+1)
+            self.utils.Generation=i+1
             self.population.extend(children)
-            self.population.RootWrite(Gen=i)
+            self.population.RootWrite(Gen=i+1)
             self.utils.fast_nondominated_sort(self.population)
             new_population = Population()
             front_num = 0

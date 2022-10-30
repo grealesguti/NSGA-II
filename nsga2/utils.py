@@ -1,11 +1,12 @@
 from nsga2.population import Population
+from nsga2.G4 import G4Job
 import random
 import ROOT
 
 class NSGA2Utils:
 
     def __init__(self, problem, num_of_individuals=100,
-                 num_of_tour_particips=2, tournament_prob=0.9, crossover_param=2, mutation_param=5, TierII=0, init=""):
+                 num_of_tour_particips=2, tournament_prob=0.9, crossover_param=2, mutation_param=5, TierII=0, init="", Generation=0):
 
         self.problem = problem
         self.num_of_individuals = num_of_individuals
@@ -15,6 +16,8 @@ class NSGA2Utils:
         self.mutation_param = mutation_param
         self.TierII = TierII
         self.init = init
+        self.Generation = Generation
+
 
     def create_initial_population(self):
         if(init==""):
@@ -25,13 +28,15 @@ class NSGA2Utils:
 
     def create_random_population(self):
         population = Population()
-        for _ in range(self.num_of_individuals):
-            individual = self.problem.generate_individual()
+        for ci in range(self.num_of_individuals):
+            individual = self.problem.generate_individual(generation=self.Generation,idx=ci)
             population.append(individual)
         feat = [child.features for child in population.population]
         if self.TierII==1:
             print("TierII Launch jobs")
-            # self.TierIIJobs(feat) # launch jobs and monitor
+            g4job = G4Job(Generation=self.Generation)
+            g4job.CleanOut()
+            g4job.TierIIRun(population.population)
         for indv in population.population:        
             self.problem.calculate_objectives(indv)
         return population
@@ -51,13 +56,15 @@ class NSGA2Utils:
         pop = Population()
         i=0
         j=0
-        for _ in range(nIndv):
+        for ci in range(nIndv):
                 individual = Individual()
+                individual.idx=ci
+                individual.Generation=self.Generation
                 #individual.features = [x for x in feat[i:i+nFeat]]
                 arr=[]            
                 for i in range(nFeat):
                     arr.append(feat[j*nFeat+i])
-                individual.features=arr            
+                individual.features=arr    
                 arr=[]
                 for i in range(nObj):
                     arr.append(obj[j*nObj+i])
@@ -119,12 +126,14 @@ class NSGA2Utils:
 
     def create_children(self, population):
         children = []
+        cc=self.num_of_individuals+1
         while len(children) < len(population):
             parent1 = self.__tournament(population)
             parent2 = parent1
             while parent1 == parent2:
                 parent2 = self.__tournament(population)
-            child1, child2 = self.__crossover(parent1, parent2)
+            child1, child2 = self.__crossover(parent1, parent2,cc=cc)
+            cc+=2
             self.__mutate(child1)
             self.__mutate(child2)
             children.append(child1)
@@ -132,15 +141,15 @@ class NSGA2Utils:
         feat = [child.features for child in children]
         if self.TierII==1:
             print("TierII Launch jobs")
-            # self.TierIIJobs(feat)
+            g4job = G4Job(Generation=self.Generation)
+            g4job.TierIIRun(children)
         for child in children:           
             self.problem.calculate_objectives(child)
-
         return children
 
-    def __crossover(self, individual1, individual2):
-        child1 = self.problem.generate_individual()
-        child2 = self.problem.generate_individual()
+    def __crossover(self, individual1, individual2,ind=0):
+        child1 = self.problem.generate_individual(generation=self.Generation,idx=ind+1)
+        child2 = self.problem.generate_individual(generation=self.Generation,idx=ind+2)
         num_of_features = len(child1.features)
         genes_indexes = range(num_of_features)
         for i in genes_indexes:

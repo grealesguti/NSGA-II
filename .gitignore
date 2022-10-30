@@ -1,4 +1,9 @@
-ROOT/
+ROOT/*.root
 nsga_2.egg-info/
 build/
+build/lib
 dist/
+__pycache__
+example/dist
+example/build
+example/nsga_2.egg-info
