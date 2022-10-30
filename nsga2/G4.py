@@ -22,7 +22,7 @@ class G4Job:
 
         def CleanOut(self):
             p = subprocess.call(['condor_rm',"greales"])
-            p = subprocess.call(['rm',"SubFiles/"self.SubName+"*"])
+            p = subprocess.call(['rm',"SubFiles/"+self.SubName+"*"])
             p = subprocess.call(['rm',self.OutFolder+self.OutName+"*"])
             return 0
 
@@ -32,9 +32,9 @@ class G4Job:
             f = open("SubFiles/"+self.SubName+".sub", "a")
             f.write("Universe = vanilla\n")
             f.write("executable = "+self.CurrentFolder+"JobFiles/"+self.JobName+"\n")
-            if(children=[]):
+            if(Children==[]):
                 #f.write('arguments ="-a Generation_'+str(self.Generation)+'_ -w $(indv) -v $(var)"\n')
-                f.write('arguments ="-a Generation_'+str(self.Generation)+'_ -v $(var)"\n')v
+                f.write('arguments ="-a Generation_'+str(self.Generation)+'_ -v $(var)"\n')
                 f.write("Output  ="+self.OutFolder+self.OutName+str(self.Generation)+"_1.out"+"\n")
             else:
                 f.write('arguments ="-a Generation_$(gen)_$(indv)"\n')
@@ -58,11 +58,11 @@ class G4Job:
             f.write("+PeriodicRemove = ((JobStatus =?= 2) && ((MemoryUsage =!= UNDEFINED && MemoryUsage > 2.5*RequestMemory)))\n")
             f.write("should_transfer_files = Yes\n")
             f.write("max_retries = 3\n")
-            if(children=[]):
+            if(Children=[]):
                 f.write("Queue 1\n")
             else:
                 f.write("Queue var, indv, gen from (\n")
-                for i in children:
+                for i in Children:
                     cmd="{"
                     #for var in i.features:
                     #    cmd=cmd+"-"+str(var)
