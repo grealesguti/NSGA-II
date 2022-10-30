@@ -28,6 +28,7 @@ class G4Job:
 
         def SubWrite(self , Children=[]):
             nvar=len(Children[0].features)
+            nvar+=-1
             f = open("SubFiles/"+self.SubName+".sub", "a")
             f.write("Universe = vanilla\n")
             f.write("executable = "+self.CurrentFolder+"JobFiles/"+self.JobName+"\n")
