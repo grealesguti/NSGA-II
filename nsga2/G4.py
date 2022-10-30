@@ -27,6 +27,7 @@ class G4Job:
             return 0
 
         def SubWrite(self , Children=[]):
+            nvar=len(Children[0].features)
             f = open("SubFiles/"+self.SubName+".sub", "a")
             f.write("Universe = vanilla\n")
             f.write("executable = "+self.CurrentFolder+"JobFiles/"+self.JobName+"\n")
@@ -59,15 +60,13 @@ class G4Job:
             if(children=[]):
                 f.write("Queue 1\n")
             else:
-                cc=0
                 f.write("Queue var, indv, gen from (\n")
                 for i in children:
                     cmd="{"
                     #for var in i.features:
                     #    cmd=cmd+"-"+str(var)
                     cmd=cmd+str(i.features)+"-"+str(2-i.features)
-                    f.write(cmd+"} , "+str(i.idx)+" , "+str(i.Generation)+"\n")
-                    cc+=1
+                    f.write(cmd+"} , "+str(i.idx)+" , "+str(i.Generation)+" , "+str(nvar)+"\n")
                 f.write(")\n")
             f.close()
             
