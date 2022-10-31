@@ -25,12 +25,12 @@ class Problem:
 
     def calculate_objectives(self, individual):
         if self.expand:
-            if obj_idx:
+            if self.obj_idx:
                 individual.objectives = [f(*individual.idx, *individual.Generation) for f in self.objectives]
             else:
                 individual.objectives = [f(*individual.features) for f in self.objectives]
         else:
-            if obj_idx:
+            if self.obj_idx:
                 individual.objectives = [f(individual.idx, individual.Generation) for f in self.objectives]
             else:
                 individual.objectives = [f(individual.features) for f in self.objectives]

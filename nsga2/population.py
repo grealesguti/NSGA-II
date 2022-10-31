@@ -27,7 +27,7 @@ class Population:
         maxn = 10
         n = array('i',[0])
         d = array('d',[0])
-        obj = array('obj',[0])
+        obj = array('d',[0])
         t.Branch('ind',n,'ind/I')
         t.Branch('features',d,'features/D')
         t2.Branch('ind',n,'ind/I')

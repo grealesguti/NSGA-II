@@ -20,10 +20,10 @@ class NSGA2Utils:
 
 
     def create_initial_population(self):
-        if(init==""):
-            population = create_random_population(self)
+        if(self.init==""):
+            population = self.create_random_population()
         else:
-            population = create_root_population(self)
+            population = self.create_root_population()
         return population
 
     def create_random_population(self):
@@ -53,7 +53,6 @@ class NSGA2Utils:
         idv_feat = [iev.ind for iev in tree_pop]
         obj = [iev.objectives for iev in tree_obj]
         idv_obj = [iev.ind for iev in tree_obj]
-        pop = Population()
         i=0
         j=0
         for ci in range(nIndv):
@@ -132,7 +131,7 @@ class NSGA2Utils:
             parent2 = parent1
             while parent1 == parent2:
                 parent2 = self.__tournament(population)
-            child1, child2 = self.__crossover(parent1, parent2,cc=cc)
+            child1, child2 = self.__crossover(parent1, parent2,ind=cc)
             cc+=2
             self.__mutate(child1)
             self.__mutate(child2)

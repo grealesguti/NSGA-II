@@ -11,7 +11,7 @@ import os.path
 from os import path
 
 class G4Job:
-        def __init__(self,CurrentFolder="/storage/af/user/greales/simG4/BTL_LYSOARRAY_LO_G4/",OutFolder="/storage/af/user/greales/simG4/outputs/", SubName="SubDefaultName", OutName="Out_NSGA", JobName="JobActionGC1FLResinMuon.sh", Generation=1, indv=1):
+        def __init__(self,CurrentFolder="/storage/af/user/greales/simG4/BTL_LYSOARRAY_LO_G4/",OutFolder="/storage/af/user/greales/simG4/outputs/", SubName="SubDefaultName", OutName="Out_NSGA", JobName="JobActionNSGATest.sh", Generation=1, indv=1):
                 self.CurrentFolder = CurrentFolder
                 self.OutFolder = OutFolder
                 self.SubName = SubName
@@ -22,8 +22,16 @@ class G4Job:
 
         def CleanOut(self):
             p = subprocess.call(['condor_rm',"greales"])
-            p = subprocess.call(['rm',"SubFiles/"+self.SubName+"*"])
-            p = subprocess.call(['rm',self.OutFolder+self.OutName+"*"])
+            frm=os.listdir('SubFiles')
+            for i in frm:
+                p = subprocess.call(['rm',"SubFiles/"+i])
+            frm=os.listdir('JobFiles')
+            for i in frm:
+                p = subprocess.call(['rm',"JobFiles/"+i])
+            frm0=os.listdir('../../../../outputs')
+            for i in frm0:
+                if (i.startswith(self.OutName)):
+                    p = subprocess.call(['rm','../../../../outputs/'+i])
             return 0
 
         def SubWrite(self , Children=[]):
@@ -32,7 +40,7 @@ class G4Job:
             f = open("SubFiles/"+self.SubName+".sub", "a")
             f.write("Universe = vanilla\n")
             f.write("executable = "+self.CurrentFolder+"JobFiles/"+self.JobName+"\n")
-            if(Children==[]):
+            if(len(Children)<2):
                 #f.write('arguments ="-a Generation_'+str(self.Generation)+'_ -w $(indv) -v $(var)"\n')
                 f.write('arguments ="-a Generation_'+str(self.Generation)+'_ -v $(var)"\n')
                 f.write("Output  ="+self.OutFolder+self.OutName+str(self.Generation)+"_1.out"+"\n")
@@ -58,30 +66,30 @@ class G4Job:
             f.write("+PeriodicRemove = ((JobStatus =?= 2) && ((MemoryUsage =!= UNDEFINED && MemoryUsage > 2.5*RequestMemory)))\n")
             f.write("should_transfer_files = Yes\n")
             f.write("max_retries = 3\n")
-            if(Children=[]):
+            if(Children==[]):
                 f.write("Queue 1\n")
             else:
-                f.write("Queue var, indv, gen from (\n")
+                f.write("Queue var, indv, gen, nvar from (\n")
                 for i in Children:
                     cmd="{"
                     #for var in i.features:
                     #    cmd=cmd+"-"+str(var)
-                    cmd=cmd+str(i.features)+"-"+str(2-i.features)
-                    f.write(cmd+"} , "+str(i.idx)+" , "+str(i.Generation)+" , "+str(nvar)+"\n")
+                    cmd=cmd+str(i.features[0])+"-"+str(2-i.features[0])
+                    f.write(cmd+"}, "+str(i.idx)+", "+str(i.Generation)+", "+str(nvar)+"\n")
                 f.write(")\n")
             f.close()
             
             return 0
 
         def SubLaunch(self):
-            p = subprocess.call(["condor_submit",self.CurrentFolder+"SubFiles/"+self.SubName+".sub"])
+            p = subprocess.call(["condor_submit","SubFiles/"+self.SubName+".sub"])
             return 0
 
         def SubMonitor(self, wait=2, maxwait=3600, ptime=60):
             tc=0
             Subname=self.OutFolder+self.OutName+str(self.Generation)
-            print("Looking for:"Subname)
-            if(self.CheckIndv(Subname))
+            print("Looking for:"+Subname)
+            if(self.CheckIndv(Subname)==True):
                 print("File Found.")
                 subprocess.call(["date"])
                 return 0
@@ -93,7 +101,7 @@ class G4Job:
                     print(".",end='')  
                     #print(tc/60)
                     #sys.stdout.write(". ")
-                    if(self.CheckIndv(Subname)):
+                    if(self.CheckIndv(self.Subname)):
                         print("File Found.")
                         subprocess.call(["date"])
                         return 0
@@ -106,7 +114,7 @@ class G4Job:
 
         def CheckIndv(self, mainname):
             finished=0
-            for cc in range(self.indv)
+            for cc in range(self.indv):
                 name=mainname+"_"+str(cc)+".out"
                 if(path.exists(name)):
                     finished+=1
