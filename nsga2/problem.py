@@ -1,5 +1,6 @@
 from nsga2.individual import Individual
 import random
+import ROOT
 
 class Problem:
 

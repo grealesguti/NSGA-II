@@ -11,7 +11,7 @@ import os.path
 from os import path
 
 class G4Job:
-        def __init__(self,CurrentFolder="/storage/af/user/greales/simG4/BTL_LYSOARRAY_LO_G4/",OutFolder="/storage/af/user/greales/simG4/outputs/", SubName="SubDefaultName", OutName="Out_NSGA", JobName="JobActionNSGATest.sh", Generation=1, indv=1):
+        def __init__(self,CurrentFolder="/storage/af/user/greales/simG4/BTL_LYSOARRAY_LO_G4/",OutFolder="/storage/af/user/greales/simG4/outputs/", SubName="SubDefaultName", OutName="Out_NSGA", JobName="JobActionNSGATest.sh", Generation=1, indv=0):
                 self.CurrentFolder = CurrentFolder
                 self.OutFolder = OutFolder
                 self.SubName = SubName
@@ -37,13 +37,15 @@ class G4Job:
         def SubWrite(self , Children=[]):
             nvar=len(Children[0].features)
             nvar+=-1
-            f = open("SubFiles/"+self.SubName+".sub", "a")
+            f = open("SubFiles/"+self.SubName+"_"+str(self.Generation)+".sub", "a")
             f.write("Universe = vanilla\n")
             f.write("executable = "+self.CurrentFolder+"JobFiles/"+self.JobName+"\n")
-            if(len(Children)<2):
+            if(len(Children)>1):
                 #f.write('arguments ="-a Generation_'+str(self.Generation)+'_ -w $(indv) -v $(var)"\n')
-                f.write('arguments ="-a Generation_'+str(self.Generation)+'_ -v $(var)"\n')
-                f.write("Output  ="+self.OutFolder+self.OutName+str(self.Generation)+"_1.out"+"\n")
+                f.write('arguments ="-a Generation_$(gen)_$(indv)_ -v $(var)"\n')
+                f.write("Output  ="+self.OutFolder+self.OutName+"_$(gen)_$(indv)"+".out"+"\n")
+               
+# f.write("Output  ="+self.OutFolder+self.OutName+str(self.Generation)+"_1.out"+"\n")
             else:
                 f.write('arguments ="-a Generation_$(gen)_$(indv)"\n')
                 f.write("Output  ="+self.OutFolder+self.OutName+"_$(gen)_$(indv)"+".out"+"\n")
@@ -69,6 +71,7 @@ class G4Job:
             if(Children==[]):
                 f.write("Queue 1\n")
             else:
+                checkoutnames=[]
                 f.write("Queue var, indv, gen, nvar from (\n")
                 for i in Children:
                     cmd="{"
@@ -76,20 +79,22 @@ class G4Job:
                     #    cmd=cmd+"-"+str(var)
                     cmd=cmd+str(i.features[0])+"-"+str(2-i.features[0])
                     f.write(cmd+"}, "+str(i.idx)+", "+str(i.Generation)+", "+str(nvar)+"\n")
+                    checkoutnames.append(self.OutFolder+self.OutName+"_"+str(i.Generation)+"_"+str(i.idx)+".out")
+                    self.indv+=1
                 f.write(")\n")
             f.close()
             
-            return 0
+            return checkoutnames
 
         def SubLaunch(self):
-            p = subprocess.call(["condor_submit","SubFiles/"+self.SubName+".sub"])
+            p = subprocess.call(["condor_submit","SubFiles/"+self.SubName+"_"+str(self.Generation)+".sub"])
             return 0
 
-        def SubMonitor(self, wait=2, maxwait=3600, ptime=60):
+        def SubMonitor(self,outnames, wait=2, maxwait=3600, ptime=60):
             tc=0
-            Subname=self.OutFolder+self.OutName+str(self.Generation)
-            print("Looking for:"+Subname)
-            if(self.CheckIndv(Subname)==True):
+            #Subname=self.OutFolder+self.OutName+str(self.Generation)
+            print("Looking for: OutName list")
+            if(self.CheckIndv(outnames)==True):
                 print("File Found.")
                 subprocess.call(["date"])
                 return 0
@@ -101,7 +106,7 @@ class G4Job:
                     print(".",end='')  
                     #print(tc/60)
                     #sys.stdout.write(". ")
-                    if(self.CheckIndv(self.Subname)):
+                    if(self.CheckIndv(outnames)):
                         print("File Found.")
                         subprocess.call(["date"])
                         return 0
@@ -112,10 +117,10 @@ class G4Job:
                         subprocess.call(["date"])
                         return 1
 
-        def CheckIndv(self, mainname):
+        def CheckIndv(self, outnames):
             finished=0
-            for cc in range(self.indv):
-                name=mainname+"_"+str(cc)+".out"
+            for name in outnames:
+                #name=mainname+"_"+str(cc)+".out"
                 if(path.exists(name)):
                     finished+=1
             if finished == self.indv:
@@ -125,7 +130,7 @@ class G4Job:
 
 
         def TierIIRun(self, population):
-                    self.SubWrite(population)
+                    outnames=self.SubWrite(population)
                     self.SubLaunch()
-                    self.SubMonitor()
+                    self.SubMonitor(outnames)
     
