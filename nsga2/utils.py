@@ -23,6 +23,7 @@ class NSGA2Utils:
         if(self.init==""):
             population = self.create_random_population()
         else:
+	    #print("ROOT Population")
             population = self.create_root_population()
         return population
 
