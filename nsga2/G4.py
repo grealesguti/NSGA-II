@@ -11,7 +11,7 @@ import os.path
 from os import path
 
 class G4Job:
-        def __init__(self,CurrentFolder="/storage/af/user/greales/simG4/BTL_LYSOARRAY_LO_G4/",OutFolder="/storage/af/user/greales/simG4/outputs/", SubName="SubDefaultName", OutName="Out_NSGA", JobName="JobActionNSGATest.sh", Generation=1, indv=0):
+        def __init__(self,CurrentFolder="/storage/af/user/greales/simG4/BTL_LYSOARRAY_LO_G4/",OutFolder="/storage/af/user/greales/simG4/outputs/", SubName="SubDefaultName", OutName="Out_NSGA", JobName="JobActionNSGATest.sh", Generation=1, indv=0,SiPMS=False):
                 self.CurrentFolder = CurrentFolder
                 self.OutFolder = OutFolder
                 self.SubName = SubName
@@ -19,6 +19,7 @@ class G4Job:
                 self.JobName = JobName
                 self.Generation = Generation
                 self.indv = indv
+                self.SiPMS = SiPMS
 
         def CleanOut(self):
             p = subprocess.call(['condor_rm',"greales"])
@@ -42,7 +43,7 @@ class G4Job:
             f.write("executable = "+self.CurrentFolder+"JobFiles/"+self.JobName+"\n")
             if(len(Children)>1):
                 #f.write('arguments ="-a Generation_'+str(self.Generation)+'_ -w $(indv) -v $(var)"\n')
-                f.write('arguments ="-a Generation_$(gen)_$(indv)_ -v $(var)"\n')
+                f.write('arguments ="-a Generation_$(gen)_$(indv)_ -v $(var) -z $(nvar)"\n')
                 f.write("Output  ="+self.OutFolder+self.OutName+"_$(gen)_$(indv)"+".out"+"\n")
                
 # f.write("Output  ="+self.OutFolder+self.OutName+str(self.Generation)+"_1.out"+"\n")
@@ -75,9 +76,9 @@ class G4Job:
                 f.write("Queue var, indv, gen, nvar from (\n")
                 for i in Children:
                     cmd="{"
-                    #for var in i.features:
-                    #    cmd=cmd+"-"+str(var)
-                    cmd=cmd+str(i.features[0])+"-"+str(2-i.features[0])
+                    for var in i.features:
+                        cmd=cmd+"-"+str(var)
+                    #cmd=cmd+str(i.features[0])+"-"+str(2-i.features[0])
                     f.write(cmd+"}, "+str(i.idx)+", "+str(i.Generation)+", "+str(nvar)+"\n")
                     checkoutnames.append(self.OutFolder+self.OutName+"_"+str(i.Generation)+"_"+str(i.idx)+".out")
                     self.indv+=1
