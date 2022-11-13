@@ -33,6 +33,10 @@ class G4Job:
             for i in frm0:
                 if (i.startswith(self.OutName)):
                     p = subprocess.call(['rm','../../../../outputs/'+i])
+            frm=os.listdir('../../../Results')
+            for i in frm0:
+                if (i.startswith("Generation")):
+                    p = subprocess.call(['rm','../../../Results/'+i])
             return 0
 
         def SubWrite(self , Children=[]):
@@ -91,7 +95,7 @@ class G4Job:
             p = subprocess.call(["condor_submit","SubFiles/"+self.SubName+"_"+str(self.Generation)+".sub"])
             return 0
 
-        def SubMonitor(self,outnames, wait=2, maxwait=3600, ptime=60):
+        def SubMonitor(self,outnames, wait=2, maxwait=7020, ptime=60):
             tc=0
             #Subname=self.OutFolder+self.OutName+str(self.Generation)
             print("Looking for: OutName list")
@@ -114,8 +118,9 @@ class G4Job:
                     time.sleep(wait)
                     tc+=wait
                     if(tc>maxwait):
-                        print("Time Limit")
+                        print("!!! Time Limit !!!")
                         subprocess.call(["date"])
+                        quit()
                         return 1
 
         def CheckIndv(self, outnames):

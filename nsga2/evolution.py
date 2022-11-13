@@ -26,13 +26,13 @@ class Evolution:
         print("Generation 1: Initial Children")
         children = self.utils.create_children(self.population)
         returned_population = None
-        self.population.RootWrite(Gen=1)
+        #self.population.RootWrite(Gen=1)
         for i in range(self.num_of_generations):
             print("### Generation: ",i+2)
             self.utils.Generation=i+2
             self.population.extend(children)
             self.utils.fast_nondominated_sort(self.population)
-            self.population.RootWrite(Gen=i+2)
+            self.population.RootWrite(Gen=i+1)
             new_population = Population()
             front_num = 0
             while len(new_population) + len(self.population.fronts[front_num]) <= self.num_of_individuals:

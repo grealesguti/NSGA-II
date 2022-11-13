@@ -29,13 +29,13 @@ class Population:
         n = array('i',[0])
         d = array('d',[0])
         obj = array('d',[0])
-        front = array('d',[0])
+        front = array('i',[0])
         t.Branch('ind',n,'ind/I')
         t.Branch('features',d,'features/D')
         t2.Branch('ind',n,'ind/I')
         t2.Branch('objectives',obj,'objectives/D')
         t3.Branch('ind',n,'ind/I')
-        t3.Branch('rank',front,'rank/D')
+        t3.Branch('rank',front,'rank/I')
         c=0
         for i in self.population:
             n[0] = c
@@ -47,11 +47,14 @@ class Population:
                 obj[0]= float(j)
                 #print("Indv: ",c," Feat: ", j)
                 t2.Fill()
-            for j in i.rank:
-                front[0]= float(j)
-                #print("Indv: ",c," Feat: ", j)
-                t3.Fill()
             c+=1
+        for f in self.fronts:
+            r=0
+            for i in f:
+                    n[0]=i.idx
+                    front[0]= r
+                    t3.Fill()  
+            r+=1
 
         f.Write()
         f.Close()
