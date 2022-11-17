@@ -93,7 +93,7 @@ class G4Job:
                 	f.write(', LYSOL')
                 f.write('from (\n')	
                 featinit=0
-                if(LYSOL):
+                if(self.LYSOL):
                 	featinit=1
                 for i in Children:
                     cmd="{"
