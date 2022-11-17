@@ -20,7 +20,7 @@ class G4Job:
                 self.ROOTName = G4input.ROOTName
                 self.Generation = Generation
                 self.indv = indv
-                SiPMS = G4input.SiPMS
+                self.SiPMS = G4input.SiPMS
                 self.LYSOL = G4input.LYSOL
 
         def CleanOut(self):
