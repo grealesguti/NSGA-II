@@ -91,7 +91,7 @@ class G4Job:
                 	f.write(', SiPM')
                 if(self.LYSOL):
                 	f.write(', LYSOL')
-                f.write('from (\n')	
+                f.write(' from (\n')	
                 featinit=0
                 if(self.LYSOL):
                 	featinit=1
