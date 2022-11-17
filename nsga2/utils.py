@@ -1,14 +1,16 @@
 from nsga2.population import Population
 from nsga2.G4 import G4Job
+from nsga2.G4Inp import G4Inp
 import random
 import ROOT
 
 class NSGA2Utils:
 
-    def __init__(self, problem, num_of_individuals=100,
+    def __init__(self, problem,G4input=G4Inp(), num_of_individuals=100,
                  num_of_tour_particips=2, tournament_prob=0.9, crossover_param=2, mutation_param=5, TierII=0, init="", Generation=0):
 
         self.problem = problem
+        self.G4input = G4input
         self.num_of_individuals = num_of_individuals
         self.num_of_tour_particips = num_of_tour_particips
         self.tournament_prob = tournament_prob
@@ -35,7 +37,7 @@ class NSGA2Utils:
         feat = [child.features for child in population.population]
         if self.TierII==1:
             print("TierII Launch jobs")
-            g4job = G4Job(Generation=self.Generation)
+            g4job = G4Job(self.G4input,eneration=self.Generation)
             g4job.CleanOut()
             g4job.TierIIRun(population.population)
         for indv in population.population:        
@@ -141,7 +143,7 @@ class NSGA2Utils:
         feat = [child.features for child in children]
         if self.TierII==1:
             print("TierII Launch jobs")
-            g4job = G4Job(Generation=self.Generation)
+            g4job = G4Job(self.G4input,Generation=self.Generation)
             g4job.TierIIRun(children)
         for child in children:           
             self.problem.calculate_objectives(child)

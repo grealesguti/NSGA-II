@@ -11,15 +11,17 @@ import os.path
 from os import path
 
 class G4Job:
-        def __init__(self,CurrentFolder="/storage/af/user/greales/simG4/BTL_LYSOARRAY_LO_G4/",OutFolder="/storage/af/user/greales/simG4/outputs/", SubName="SubDefaultName", OutName="Out_NSGA", JobName="JobActionNSGATest.sh", Generation=1, indv=0,SiPMS=False):
-                self.CurrentFolder = CurrentFolder
-                self.OutFolder = OutFolder
-                self.SubName = SubName
-                self.OutName = OutName
-                self.JobName = JobName
+        def __init__(self,G4input, Generation=1, indv=0):
+                self.CurrentFolder = G4input.CurrentFolder
+                self.OutFolder = G4input.OutFolder
+                self.SubName = G4input.SubName
+                self.OutName = G4input.OutName
+                self.JobName = G4input.JobName
+                self.ROOTName = G4input.ROOTName
                 self.Generation = Generation
                 self.indv = indv
-                self.SiPMS = SiPMS
+                self.SiPMS = G4input.SiPMS
+                self.LYSOL = G4input.LYSOL
 
         def CleanOut(self):
             p = subprocess.call(['condor_rm',"greales"])
@@ -35,7 +37,7 @@ class G4Job:
                     p = subprocess.call(['rm','../../../../outputs/'+i])
             frm=os.listdir('../../../Results')
             for i in frm0:
-                if (i.startswith("Generation")):
+                if (i.startswith(self.ROOTName)):
                     p = subprocess.call(['rm','../../../Results/'+i])
             return 0
 
@@ -47,7 +49,13 @@ class G4Job:
             f.write("executable = "+self.CurrentFolder+"JobFiles/"+self.JobName+"\n")
             if(len(Children)>1):
                 #f.write('arguments ="-a Generation_'+str(self.Generation)+'_ -w $(indv) -v $(var)"\n')
-                f.write('arguments ="-a Generation_$(gen)_$(indv)_ -v $(var) -z $(nvar)"\n')
+                f.write('arguments ="-a '+self.ROOTName+'$(gen)_$(indv)_ -v $(var) -z $(nvar)"')
+                if(SiPMS):
+                	f.write('" -t $(SiPM)"')
+                if(LYSOL):
+                	f.write('" --l $LYSOL"')	
+                f.write('\n')	
+            
                 f.write("Output  ="+self.OutFolder+self.OutName+"_$(gen)_$(indv)"+".out"+"\n")
                
 # f.write("Output  ="+self.OutFolder+self.OutName+str(self.Generation)+"_1.out"+"\n")
@@ -77,13 +85,28 @@ class G4Job:
                 f.write("Queue 1\n")
             else:
                 checkoutnames=[]
-                f.write("Queue var, indv, gen, nvar from (\n")
+                f.write("Queue var, indv, gen, nvar")
+
+                if(SiPMS):
+                	f.write(', SiPM')
+                if(LYSOL):
+                	f.write(', LYSOL')
+                f.write('from (\n')	
+                featinit=0
+                if(LYSOL):
+                	featinit=1
                 for i in Children:
                     cmd="{"
-                    for var in i.features:
+                    for var in i.features[featinit,-1]:
                         cmd=cmd+"-"+str(var)
                     #cmd=cmd+str(i.features[0])+"-"+str(2-i.features[0])
-                    f.write(cmd+"}, "+str(i.idx)+", "+str(i.Generation)+", "+str(nvar)+"\n")
+                    f.write(cmd+"}, "+str(i.idx)+", "+str(i.Generation)+", "+str(nvar))
+                    if (SiPMS):
+                        f.write(', '+str(i.features[featinit]*100))
+                    if(LYSOL):
+                        f.write(', '+str(i.features[0]))
+                    f.write('\n')
+
                     checkoutnames.append(self.OutFolder+self.OutName+"_"+str(i.Generation)+"_"+str(i.idx)+".out")
                     self.indv+=1
                 f.write(")\n")
