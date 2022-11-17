@@ -37,7 +37,7 @@ class NSGA2Utils:
         feat = [child.features for child in population.population]
         if self.TierII==1:
             print("TierII Launch jobs")
-            g4job = G4Job(self.G4input,eneration=self.Generation)
+            g4job = G4Job(self.G4input,Generation=self.Generation)
             g4job.CleanOut()
             g4job.TierIIRun(population.population)
         for indv in population.population:        

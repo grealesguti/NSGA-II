@@ -20,7 +20,7 @@ class G4Job:
                 self.ROOTName = G4input.ROOTName
                 self.Generation = Generation
                 self.indv = indv
-                self.SiPMS = G4input.SiPMS
+                SiPMS = G4input.SiPMS
                 self.LYSOL = G4input.LYSOL
 
         def CleanOut(self):
@@ -50,9 +50,9 @@ class G4Job:
             if(len(Children)>1):
                 #f.write('arguments ="-a Generation_'+str(self.Generation)+'_ -w $(indv) -v $(var)"\n')
                 f.write('arguments ="-a '+self.ROOTName+'$(gen)_$(indv)_ -v $(var) -z $(nvar)"')
-                if(SiPMS):
+                if(self.SiPMS):
                 	f.write('" -t $(SiPM)"')
-                if(LYSOL):
+                if(self.LYSOL):
                 	f.write('" --l $LYSOL"')	
                 f.write('\n')	
             
@@ -87,9 +87,9 @@ class G4Job:
                 checkoutnames=[]
                 f.write("Queue var, indv, gen, nvar")
 
-                if(SiPMS):
+                if(self.SiPMS):
                 	f.write(', SiPM')
-                if(LYSOL):
+                if(self.LYSOL):
                 	f.write(', LYSOL')
                 f.write('from (\n')	
                 featinit=0
@@ -101,9 +101,9 @@ class G4Job:
                         cmd=cmd+"-"+str(var)
                     #cmd=cmd+str(i.features[0])+"-"+str(2-i.features[0])
                     f.write(cmd+"}, "+str(i.idx)+", "+str(i.Generation)+", "+str(nvar))
-                    if (SiPMS):
+                    if (self.SiPMS):
                         f.write(', '+str(i.features[featinit]*100))
-                    if(LYSOL):
+                    if(self.LYSOL):
                         f.write(', '+str(i.features[0]))
                     f.write('\n')
 
