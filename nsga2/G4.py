@@ -97,7 +97,7 @@ class G4Job:
                 	featinit=1
                 for i in Children:
                     cmd="{"
-                    for var in i.features[featinit:len(arr)+1]:
+                    for var in i.features[featinit:len(i.features)+1]:
                         cmd=cmd+"-"+str(var)
                     #cmd=cmd+str(i.features[0])+"-"+str(2-i.features[0])
                     f.write(cmd+"}, "+str(i.idx)+", "+str(i.Generation)+", "+str(nvar))
