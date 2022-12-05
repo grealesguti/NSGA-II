@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
 #rf=os.listdir('geant4sim/SingLYSO/NSGAII/PyNSGA/NSGA-II/ROOT/')
-test='test1'
+test='Test_2911'
 folderpath='ROOT/'+test
 rf=os.listdir(folderpath)
 rf_len=len(rf)
