@@ -5,7 +5,7 @@ import math
 import ROOT
 from nsga2.G4Inp import G4Inp
 
-G4input = G4Inp(CurrentFolder="/storage/af/user/greales/simG4/BTL_LYSOARRAY_LO_G4/", OutFolder =  "/storage/af/user/greales/simG4/outputs/", SubName="SubDefaultName", OutName="Out_NSGA", JobName="JobActionNSGATest.sh", SiPMS=False, LYSOL=False, ROOTName='Generation_', RelativeFolder="../../../Results/")
+G4input = G4Inp(CurrentFolder="/storage/af/user/greales/simG4/BTL_LYSOARRAY_LO_G4/", OutFolder =  "/storage/af/user/greales/simG4/outputs/", SubName="SubDefaultName", OutName="Out_NSGA", JobName="JobActionNSGATestGmsh.sh", SiPMS=False, LYSOL=False, ROOTName='Generation_', RelativeFolder="../../../Results/", Singularity = "/storage/af/user/greales/SingDir/sandG4Gmsh")
 
 
 def f1(indv, generation, PopName=G4input.ROOTName,Pop=0,Folder=G4input.RelativeFolder):
@@ -27,7 +27,7 @@ def f2(indv, generation, PopName=G4input.ROOTName,Pop=0,Folder=G4input.RelativeF
     return Vol
 
 nindv=100
-problem = Problem(num_of_variables=10, objectives=[f1,f2], variables_range=[(0.25,1.75)], same_range=True, expand=False, obj_idx=True)
+problem = Problem(num_of_variables=5, objectives=[f1,f2], variables_range=[(0.25,1.75)], same_range=True, expand=False, obj_idx=True)
 evo = Evolution(problem, mutation_param=20, num_of_generations=100, num_of_individuals=100, TierII=1)
 
 indv=[i for i in evo.evolve()]

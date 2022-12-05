@@ -22,6 +22,7 @@ class G4Job:
                 self.indv = indv
                 self.SiPMS = G4input.SiPMS
                 self.LYSOL = G4input.LYSOL
+                self.Singularity = G4input.Singularity
 
         def CleanOut(self):
             p = subprocess.call(['condor_rm',"greales"])
@@ -71,7 +72,7 @@ class G4Job:
             f.write("+RunAsOwner = True\n")
             f.write("+InteractiveUser = True\n")
             f.write("+SingularityBindCVMFS = True\n")
-            f.write('+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/cmssw/cms:rhel7"\n')
+            f.write('+SingularityImage = '+ self.Singularity)
             f.write("x509userproxy = $ENV(X509_USER_PROXY)\n")
             f.write("RequestDisk = 2000000\n")
             f.write("RequestMemory = 2000\n")
