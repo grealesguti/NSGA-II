@@ -25,7 +25,7 @@ class NSGA2Utils:
         if(self.init==""):
             population = self.create_random_population()
         else:
-	    #print("ROOT Population")
+			print("ROOT Population")
             population = self.create_root_population()
         return population
 
@@ -39,7 +39,9 @@ class NSGA2Utils:
             print("TierII Launch jobs")
             g4job = G4Job(self.G4input,Generation=self.Generation)
             g4job.CleanOut()
+            print("Cleaned")
             g4job.TierIIRun(population.population)
+            print("Run")
         for indv in population.population:        
             self.problem.calculate_objectives(indv)
         return population
