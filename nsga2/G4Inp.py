@@ -10,7 +10,7 @@ import os.path
 from os import path
 
 class G4Inp:
-        def __init__(self,CurrentFolder="/storage/af/user/greales/simG4/BTL_LYSOARRAY_LO_G4/",OutFolder="/storage/af/user/greales/simG4/outputs/", SubName="SubDefaultName", OutName="Out_NSGA", JobName="JobActionNSGATest.sh", SiPMS=False,LYSOL=False,ROOTName='Generation_', RelativeFolder="../../../Results/", Singularity="/cvmfs/singularity.opensciencegrid.org/cmssw/cms:rhel7"):
+        def __init__(self,CurrentFolder="/storage/af/user/greales/simG4/BTL_LYSOARRAY_LO_G4/",OutFolder="/storage/af/user/greales/simG4/outputs/", SubName="SubDefaultName", OutName="Out_NSGA", JobName="JobActionNSGATest.sh", SiPMS=False,LYSOL=False,ROOTName='Generation_', RelativeFolder="../../../Results/", Singularity='+SingularityImage="/cvmfs/singularity.opensciencegrid.org/cmssw/cms:rhel7"\n'):
                 self.CurrentFolder = CurrentFolder
                 self.OutFolder = OutFolder
                 self.SubName = SubName

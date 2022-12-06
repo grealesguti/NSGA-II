@@ -15,9 +15,9 @@ class Evolution:
         print("### Initialized Evolution.")
 
     def evolve(self):
-		print("## Evolve")
+		#print("## Evolve")
         self.population = self.utils.create_initial_population()
-        print("## Init Population")
+        #print("## Init Population")
         self.utils.fast_nondominated_sort(self.population)
         for front in self.population.fronts:
             self.utils.calculate_crowding_distance(front)
