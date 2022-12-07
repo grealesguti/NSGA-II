@@ -25,11 +25,14 @@ class G4Job:
                 self.Singularity = G4input.Singularity
 
         def CleanOut(self):
+			print("### Cleaning:")
             p = subprocess.call(['condor_rm',"greales"])
+            print("## HTCondor")
             frm=os.listdir('SubFiles')
             for i in frm:
                 p = subprocess.call(['rm',"SubFiles/"+i])
             frm=os.listdir('JobFiles')
+            print("### SubFiles")
             for i in frm:
                 p = subprocess.call(['rm',"JobFiles/"+i])
             frm0=os.listdir('../../../../outputs')
@@ -37,12 +40,14 @@ class G4Job:
                 if (i.startswith(self.OutName)):
                     p = subprocess.call(['rm','../../../../outputs/'+i])
             frm=os.listdir('../../../Results')
+            print("### Results")
             for i in frm0:
                 if (i.startswith(self.ROOTName)):
                     p = subprocess.call(['rm','../../../Results/'+i])
             return 0
 
         def SubWrite(self , Children=[]):
+			print("### Writting Sub File:")
             nvar=len(Children[0].features)
             nvar+=-1
             f = open("SubFiles/"+self.SubName+"_"+str(self.Generation)+".sub", "a")
