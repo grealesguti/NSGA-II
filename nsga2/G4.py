@@ -56,12 +56,12 @@ class G4Job:
             f.write("executable = "+self.CurrentFolder+"JobFiles/"+self.JobName+"\n")
             if(len(Children)>1):
                 #f.write('arguments ="-a Generation_'+str(self.Generation)+'_ -w $(indv) -v $(var)"\n')
-                f.write('arguments ="-a '+self.ROOTName+'$(gen)_$(indv)_ -v $(var) -z $(nvar)"')
+                f.write('arguments ="-a '+self.ROOTName+'$(gen)_$(indv)_ -v $(var) -z $(nvar)')
                 if(self.SiPMS):
-                	f.write('" -t $(SiPM)"')
+                	f.write(' -t $(SiPM)')
                 if(self.LYSOL):
-                	f.write('" -l $LYSOL"')	
-                f.write('\n')	
+                	f.write(' -l $(LYSOL)')	
+                f.write('"\n')	
             
                 f.write("Output  ="+self.OutFolder+self.OutName+"_$(gen)_$(indv)"+".out"+"\n")
                
