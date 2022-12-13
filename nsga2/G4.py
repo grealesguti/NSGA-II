@@ -31,20 +31,21 @@ class G4Job:
             frm=os.listdir('SubFiles')
             for i in frm:
                 p = subprocess.call(['rm',"SubFiles/"+i])
-            frm=os.listdir('JobFiles')
-            print("### SubFiles")
-            for i in frm:
-                p = subprocess.call(['rm',"JobFiles/"+i])
-            frm0=os.listdir('../../../../outputs')
-            for i in frm0:
-                if (i.startswith(self.OutName)):
-                    p = subprocess.call(['rm','../../../../outputs/'+i])
-            frm=os.listdir('../../../Results')
-            print("### Results")
-            for i in frm0:
-                if (i.startswith(self.ROOTName)):
-                    p = subprocess.call(['rm','../../../Results/'+i])
-            return 0
+            #frm=os.listdir('JobFiles')
+            #print("### SubFiles")
+            #for i in frm:
+            #    p = subprocess.call(['rm',"JobFiles/"+i])
+            #frm0=os.listdir('../../../../outputs')
+            #for i in frm0:
+            #    if (i.startswith(self.OutName)):
+            #        p = subprocess.call(['rm','../../../../outputs/'+i])
+            #frm=os.listdir('../../../Results')
+            print("!!!! Be sure to delete all Generation.root files from the G4 folder")
+            #print("### Results")
+            #for i in frm0:
+            #    if (i.startswith(self.ROOTName)):
+            #        p = subprocess.call(['rm','../../../Results/'+i])
+            #return 0
 
         def SubWrite(self , Children=[]):
             print("### Writting Sub File:")
@@ -77,7 +78,7 @@ class G4Job:
             f.write("+RunAsOwner = True\n")
             f.write("+InteractiveUser = True\n")
             f.write("+SingularityBindCVMFS = True\n")
-            f.write(self.Singularity)
+            f.write(self.Singularity+"\n")
             f.write("x509userproxy = $ENV(X509_USER_PROXY)\n")
             f.write("RequestDisk = 2000000\n")
             f.write("RequestMemory = 2000\n")
