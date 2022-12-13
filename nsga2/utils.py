@@ -6,7 +6,7 @@ import ROOT
 
 class NSGA2Utils:
 
-    def __init__(self, problem,G4input=G4Inp(), num_of_individuals=100,
+    def __init__(self, problem,G4input, num_of_individuals=100,
                  num_of_tour_particips=2, tournament_prob=0.9, crossover_param=2, mutation_param=5, TierII=0, init="", Generation=0):
 
         self.problem = problem

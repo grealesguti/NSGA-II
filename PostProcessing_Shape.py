@@ -60,7 +60,7 @@ def printLYSO(Znode,Ztot,Xtot,ptsY,imagename,Vol,LC):
 ###############################################
 ### Extract information from generation given
 ###############################################
-test='Test_2911'
+test='Test_Cont_071222v2'
 folderpath='ROOT/'+test
 rf=os.listdir(folderpath)
 rf_len=len(rf)
@@ -128,12 +128,12 @@ for j in range(tree_vars.GetEntries()):
 Ztot =28.5
 Xtot=1.5*2
 folder="pictures/ROOT/"
-#for i in range(num_indv-1):
-for i in range(2):
+for i in range(num_indv-1):
+#for i in range(2):
 	if(obj_front[i]==0):
 		imagename="LYSOTEST_Vol_"+str(round(obj_objf[i*2+1],1))+"_LC_"+str(round(obj_objf[i*2+2],1))
 		gmsh.model.add(imagename)
-		printLYSO(num_vars-1,Ztot,Xtot,varstup[i],folder+test+"/test/"+imagename,obj_objf[i*2+1],obj_objf[i*2+2])
+		printLYSO(num_vars-1,Ztot,Xtot,varstup[i],folder+test+"/shape/"+imagename,obj_objf[i*2+1],obj_objf[i*2+2])
 
 	
 
