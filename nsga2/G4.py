@@ -35,10 +35,10 @@ class G4Job:
             #print("### SubFiles")
             #for i in frm:
             #    p = subprocess.call(['rm',"JobFiles/"+i])
-            #frm0=os.listdir('../../../../outputs')
-            #for i in frm0:
-            #    if (i.startswith(self.OutName)):
-            #        p = subprocess.call(['rm','../../../../outputs/'+i])
+            frm0=os.listdir('../../../../outputs')
+            for i in frm0:
+                if (i.startswith(self.OutName)):
+                    p = subprocess.call(['rm','../../../../outputs/'+i])
             #frm=os.listdir('../../../Results')
             print("!!!! Be sure to delete all Generation.root files from the G4 folder")
             #print("### Results")
