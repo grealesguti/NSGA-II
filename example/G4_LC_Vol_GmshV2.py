@@ -29,7 +29,7 @@ def f2(indv, generation, PopName=G4input.ROOTName,Pop=0,Folder=G4input.RelativeF
 nindv=100
 n_of_variables=5+1
 
-var_range=[(1.5,28.5),(0.25,1.75),(0.25,1.75),(0.25,1.75),(0.25,1.75),(0.25,1.75)]
+var_range=[(15,28.5),(0.25,1.75),(0.25,1.75),(0.25,1.75),(0.25,1.75),(0.25,1.75)]
 problem = Problem(num_of_variables=n_of_variables, objectives=[f1,f2], variables_range=var_range, same_range=False, expand=False, obj_idx=True)
 evo = Evolution(problem,G4InputClass=G4input, mutation_param=20, num_of_generations=100, num_of_individuals=100, TierII=1)
 
