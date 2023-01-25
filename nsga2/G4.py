@@ -125,29 +125,30 @@ class G4Job:
             p = subprocess.call(["condor_submit","SubFiles/"+self.SubName+"_"+str(self.Generation)+".sub"])
             return 0
 
-        def SubMonitor(self,outnames, wait=30, maxwait=7020, ptime=60):
+        def SubMonitor(self,outnames, wait=2, maxwait=7020, ptime=60):
             tc=0
-            start_time = time.time()
+            #Subname=self.OutFolder+self.OutName+str(self.Generation)
             print("Looking for: OutName list")
             if(self.CheckIndv(outnames)==True):
-                print("### File Found.")
+                print("File Found.")
                 subprocess.call(["date"])
-                time.sleep(wait)
                 return 0
             else:
-                print("### Waiting for {} seconds...".format(maxwait))
+                print("Waiting")
                 subprocess.call(["date"])
-                while(time.time() - start_time < maxwait):
-                    print(".", end="", flush=True)
+                while(tc<maxwait):
+                    #print(".", end = "") 
+                    print(".",end='')  
+                    #print(tc/60)
+                    #sys.stdout.write(". ")
                     if(self.CheckIndv(outnames)):
-                        print("\n### Files Found.")
+                        print("File Found.")
                         subprocess.call(["date"])
-                        time.sleep(wait)
                         return 0
                     time.sleep(wait)
                     tc+=wait
                     if(tc>maxwait):
-                        print("\n!!! Time Limit !!!")
+                        print("!!! Time Limit !!!")
                         subprocess.call(["date"])
                         quit()
                         return 1
