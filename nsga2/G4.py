@@ -127,28 +127,27 @@ class G4Job:
 
         def SubMonitor(self,outnames, wait=2, maxwait=7020, ptime=60):
             tc=0
-            #Subname=self.OutFolder+self.OutName+str(self.Generation)
+            start_time = time.time()
             print("Looking for: OutName list")
             if(self.CheckIndv(outnames)==True):
-                print("File Found.")
+                print("### File Found.")
                 subprocess.call(["date"])
+                time.sleep(wait)
                 return 0
             else:
-                print("Waiting")
+                print("### Waiting for {} seconds...".format(maxwait))
                 subprocess.call(["date"])
-                while(tc<maxwait):
-                    #print(".", end = "") 
-                    print(".",end='')  
-                    #print(tc/60)
-                    #sys.stdout.write(". ")
+                while(time.time() - start_time < maxwait):
+                    print(".", end="", flush=True)
                     if(self.CheckIndv(outnames)):
-                        print("File Found.")
+                        print("\n### Files Found.")
                         subprocess.call(["date"])
+                        time.sleep(wait)
                         return 0
                     time.sleep(wait)
                     tc+=wait
                     if(tc>maxwait):
-                        print("!!! Time Limit !!!")
+                        print("\n!!! Time Limit !!!")
                         subprocess.call(["date"])
                         quit()
                         return 1
