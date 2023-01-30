@@ -142,7 +142,7 @@ class G4Job:
                     if(self.CheckIndv(outnames)):
                         print("\n### Files Found.")
                         subprocess.call(["date"])
-                        time.sleep(wait)
+                        time.sleep(wait*5)
                         return 0
                     time.sleep(wait)
                     tc+=wait
