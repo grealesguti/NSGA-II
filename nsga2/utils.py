@@ -25,7 +25,7 @@ class NSGA2Utils:
         if(self.init==""):
             population = self.create_random_population()
         else:
-			#print("ROOT Population")
+            print("ROOT Population")
             population = self.create_root_population()
         return population
 
@@ -62,18 +62,21 @@ class NSGA2Utils:
         j=0
         for ci in range(nIndv):
                 individual = Individual()
+                print('indv: ',ci)
                 individual.idx=ci
                 individual.Generation=self.Generation
                 #individual.features = [x for x in feat[i:i+nFeat]]
                 arr=[]            
                 for i in range(nFeat):
                     arr.append(feat[j*nFeat+i])
-                individual.features=arr    
+                individual.features=arr
+                print('features: ',arr)    
                 arr=[]
                 for i in range(nObj):
                     arr.append(obj[j*nObj+i])
                     #individual.objectives = obj[j*nIndv+i]
                 individual.objectives=arr    
+                print('objectives: ',arr)
                 i=i+nFeat
                 j+=1
                 pop.append(individual)
