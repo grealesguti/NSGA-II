@@ -31,7 +31,7 @@ n_of_variables=5*2+1
 var_range=[(18.5,28.5),(0.25,1.75),(0.25,2.25),(0.25,2.25),(0.25,2.25),(0.25,2.25),(0.25,2.25),(0.25,2.25),(0.25,2.25),(0.25,2.25),(0.25,2.25)]
 
 problem = Problem(num_of_variables=n_of_variables, objectives=[f1,f2], variables_range=var_range, same_range=False, expand=False, obj_idx=True)
-evo = Evolution(problem,G4InputClass=G4input, mutation_param=20, num_of_generations=400, num_of_individuals=100, TierII=1,init='')
+evo = Evolution(problem,G4InputClass=G4input, mutation_param=20, num_of_generations=400, num_of_individuals=100, TierII=1,init_evo='ROOT/save_0130.root',Generation=55)
 
 indv=[i for i in evo.evolve()]
 func = [i.objectives for i in indv]

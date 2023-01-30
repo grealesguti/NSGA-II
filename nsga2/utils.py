@@ -1,4 +1,5 @@
 from nsga2.population import Population
+from nsga2.individual import Individual
 from nsga2.G4 import G4Job
 from nsga2.G4Inp import G4Inp
 import random
@@ -7,7 +8,7 @@ import ROOT
 class NSGA2Utils:
 
     def __init__(self, problem,G4input, num_of_individuals=100,
-                 num_of_tour_particips=2, tournament_prob=0.9, crossover_param=2, mutation_param=5, TierII=0, init="", Generation=0):
+                 num_of_tour_particips=2, tournament_prob=0.9, crossover_param=2, mutation_param=5, TierII=0, init='', Generation=0):
 
         self.problem = problem
         self.G4input = G4input
@@ -22,14 +23,16 @@ class NSGA2Utils:
 
 
     def create_initial_population(self):
-        if(self.init==""):
+        if(self.init==''):
+            print("Initial Population: Random Population")
             population = self.create_random_population()
         else:
-            print("ROOT Population")
+            print("Initial Population: ROOT Population")
             population = self.create_root_population()
         return population
 
     def create_random_population(self):
+        print("Create: Random Population")
         population = Population()
         for ci in range(self.num_of_individuals):
             individual = self.problem.generate_individual(generation=self.Generation,idx=ci)
@@ -47,6 +50,7 @@ class NSGA2Utils:
         return population
 
     def create_root_population(self):
+        pop=Population()
         f = ROOT.TFile(self.init,"READ")
         tree_pop = f.Get("tPopulation")
         tree_obj = f.Get("tObjectives")

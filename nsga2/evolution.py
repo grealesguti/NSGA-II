@@ -5,9 +5,9 @@ import ROOT
 
 class Evolution:
 
-    def __init__(self, problem,G4InputClass=G4Inp(),TierII=0, num_of_generations=1000, num_of_individuals=100, num_of_tour_particips=2, tournament_prob=0.9, crossover_param=2, mutation_param=5,init=''):
+    def __init__(self, problem,G4InputClass=G4Inp(),TierII=0, num_of_generations=1000, num_of_individuals=100, num_of_tour_particips=2, tournament_prob=0.9, crossover_param=2, mutation_param=5,init_evo='',Generation_evo=0):
         self.TierII=TierII
-        self.utils = NSGA2Utils(problem,G4InputClass, num_of_individuals, num_of_tour_particips, tournament_prob, crossover_param, mutation_param,TierII=self.TierII,init='')
+        self.utils = NSGA2Utils(problem,G4InputClass, num_of_individuals, num_of_tour_particips, tournament_prob, crossover_param, mutation_param,TierII=self.TierII,init=init_evo,Generation=Generation_evo)
         self.population = None
         self.num_of_generations = num_of_generations
         self.on_generation_finished = []
