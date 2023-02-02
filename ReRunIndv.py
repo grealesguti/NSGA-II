@@ -137,7 +137,7 @@ def closest_value(lst, value):
 def SubLaunch(SubName,Generation):
             p = subprocess.call(["condor_submit","SubFiles/"+SubName+"_"+str(Generation)+".sub"])
             return 0
-def SubWrite(features, ntimes, Vol,  ROOTName, Generation,SubName ='SubFileGen', JobName='JobActionNSGATestGmshPost.sh', Singularity='/storage/af/user/greales/SingDir/sandG4Gmsh', SiPMS=False, LYSOL=False):
+def SubWrite(features, ntimes, Vol,  ROOTName, Generation,SubName ='SubFileGen', JobName='JobActionNSGATestGmshPost.sh', Singularity='+SingularityImage="/storage/af/user/greales/SingDir/sandG4Gmsh"', SiPMS=False, LYSOL=False):
             print("### Writting Sub File:")
             nvar=len(features)
             nvar+=-1
@@ -168,7 +168,7 @@ def SubWrite(features, ntimes, Vol,  ROOTName, Generation,SubName ='SubFileGen',
             f.write("+RunAsOwner = True\n")
             f.write("+InteractiveUser = True\n")
             f.write("+SingularityBindCVMFS = True\n")
-            f.write(Singularity+"\n")
+            f.write("+SingularityImage = "+Singularity+"\n")
             f.write("x509userproxy = $ENV(X509_USER_PROXY)\n")
             f.write("RequestDisk = 2000000\n")
             f.write("RequestMemory = 2000\n")
