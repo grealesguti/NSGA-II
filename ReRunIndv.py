@@ -13,6 +13,19 @@ import argparse
 from ROOT import TFile, TTree
 import math
 
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("folder", help="The name of the folder to be used.")
+    parser.add_argument("generation",type=int, help="The number of the generation to plot.")
+    parser.add_argument("--Ysym","-y", type=int, default=0, help="Y symmetry point.")
+    parser.add_argument("--Length","-l", type=int, default=0, help="Y symmetry point.")
+    parser.add_argument("--save","-sv", type=int, default=1, help="Y symmetry point.")
+    parser.add_argument("--Shape","-sh", type=int, default=0, help="Y symmetry point.")
+    parser.add_argument("--ParetoFrontier","-pf", type=int, default=0, help="Y symmetry point.")
+    parser.add_argument("--Filter","-f", type=int, default=0, help="Y symmetry point.")
+    parser.add_argument("--LaunchIndv","-t", type=int, default=0, help="Y symmetry point.")
+
+    return parser.parse_args()
 def delete_file(file_path):
     if os.path.exists(file_path):
         os.remove(file_path)
@@ -65,20 +78,6 @@ def GetRootVariables(gen_file):
 		vars_tuple.append(lstvars)
 		
 	return num_indv,num_vars,obj1,obj2,vars_tuple,lstvars
-
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("folder", help="The name of the folder to be used.")
-    parser.add_argument("generation",type=int, help="The number of the generation to plot.")
-    parser.add_argument("--Ysym","-y", type=int, default=0, help="Y symmetry point.")
-    parser.add_argument("--Length","-l", type=int, default=0, help="Y symmetry point.")
-    parser.add_argument("--save","-sv", type=int, default=1, help="Y symmetry point.")
-    parser.add_argument("--Shape","-sh", type=int, default=0, help="Y symmetry point.")
-    parser.add_argument("--ParetoFrontier","-pf", type=int, default=0, help="Y symmetry point.")
-    parser.add_argument("--Filter","-f", type=int, default=0, help="Y symmetry point.")
-    parser.add_argument("--LaunchIndv","-t", type=int, default=0, help="Y symmetry point.")
-
-    return parser.parse_args()
     
 def find_strings_containing_substring(strings, substring):
     matching_strings = []
@@ -138,7 +137,7 @@ def closest_value(lst, value):
 def SubLaunch(SubName,Generation):
             p = subprocess.call(["condor_submit","SubFiles/"+SubName+"_"+str(Generation)+".sub"])
             return 0
-def SubWrite(features, ntimes, Vol,  ROOTName, Generation,SubName ='SubFileGen', JobName='JobName.sh', Singularity='Singularity', SiPMS=False, LYSOL=False):
+def SubWrite(features, ntimes, Vol,  ROOTName, Generation,SubName ='SubFileGen', JobName='JobActionNSGATestGmshPost.sh', Singularity='/storage/af/user/greales/SingDir/sandG4Gmsh', SiPMS=False, LYSOL=False):
             print("### Writting Sub File:")
             nvar=len(features)
             nvar+=-1
@@ -254,7 +253,12 @@ def main():
 		print(obj2f[closest_index+1],' ', obj1f[closest_index+1],' ',obj1f[closest_index+1]/obj2f[closest_index+1])
 		original_idx = idxf[closest_index]
 		print(vars_tuple[original_idx])
-		SubWrite(vars_tuple[original_idx], 50, math.ceil(obj2f[closest_index]), 'testrootname', gen)
+		
+		if (args.Length>0):
+			SubWrite(vars_tuple[original_idx], 50, math.ceil(obj2f[closest_index]), 'testrootname', gen, LYSOL=True)
+		else:
+			SubWrite(vars_tuple[original_idx], 50, math.ceil(obj2f[closest_index]), 'testrootname', gen)
+			
 		#SubLaunch(gen)
 		
 			
