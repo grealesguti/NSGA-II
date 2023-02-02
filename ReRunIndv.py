@@ -24,7 +24,8 @@ def parse_args():
     parser.add_argument("--ParetoFrontier","-pf", type=int, default=0, help="Y symmetry point.")
     parser.add_argument("--Filter","-f", type=int, default=0, help="Y symmetry point.")
     parser.add_argument("--LaunchIndv","-t", type=int, default=0, help="Y symmetry point.")
-
+    parser.add_argument("--Vol", type=float, default=513, help="A float argument with a default value of 500") # defaults  410 - 513 - 641
+   
     return parser.parse_args()
 def delete_file(file_path):
     if os.path.exists(file_path):
@@ -182,12 +183,13 @@ def SubWrite(features, ntimes, Vol,  ROOTName, Generation,SubName ='SubFileGen',
                 f.write("Queue 1\n")
             else:
                 checkoutnames=[]
-                f.write("Queue var, vol, gen, nvar")
+                f.write("Queue var, vol, gen, nvar ")
 
                 if(SiPMS):
                 	f.write(', SiPM')
                 if(LYSOL):
                 	f.write(', LYSOL')
+                f.write(', Item')
                 f.write(' from (\n')	
                 featinit=0
                 if(LYSOL):
@@ -201,10 +203,10 @@ def SubWrite(features, ntimes, Vol,  ROOTName, Generation,SubName ='SubFileGen',
                 	cmd=cmd+', '+str(features[featinit]*100)
                 if(LYSOL):
                 	cmd=cmd+', '+str(features[0])
-                cmd=cmd+'\n'
+                #cmd=cmd+'\n'
                 
                 for i in range(ntimes):
-                	f.write(cmd)
+                	f.write(cmd+", "+str(i)+"\n")
                 f.write(")\n")
             f.close()
             
@@ -247,7 +249,7 @@ def main():
 		# Get required input for plotting the crystal shapes
 		num_indv,num_vars,obj1,obj2,vars_tuple,lstvars = GetRootVariables(gen_file)
 		obj1f,obj2f,idxf=filter_values(obj1,obj2,20)
-		closest, closest_index=closest_value(obj2f,500)
+		closest, closest_index=closest_value(obj2f,args.Vol)
 		print(obj2f[closest_index-1],' ', obj1f[closest_index-1],' ',obj1f[closest_index-1]/obj2f[closest_index-1])
 		print(closest,' ' ,closest_index,' ', obj1f[closest_index],' ',obj1f[closest_index]/obj2f[closest_index])
 		print(obj2f[closest_index+1],' ', obj1f[closest_index+1],' ',obj1f[closest_index+1]/obj2f[closest_index+1])
@@ -255,7 +257,7 @@ def main():
 		print(vars_tuple[original_idx])
 		
 		if (args.Length>0):
-			SubWrite(vars_tuple[original_idx], 50, math.ceil(obj2f[closest_index]), 'testrootname', gen, LYSOL=True)
+			SubWrite(vars_tuple[original_idx], 50, math.ceil(obj2f[closest_index]), 'testrootname', gen,SubName = 'SubFile_'+str(gen)+'_Vol_'+str(args.Vol), LYSOL=True)
 		else:
 			SubWrite(vars_tuple[original_idx], 50, math.ceil(obj2f[closest_index]), 'testrootname', gen)
 			
