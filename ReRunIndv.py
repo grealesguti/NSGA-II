@@ -154,12 +154,12 @@ def SubWrite(features, ntimes, Vol,  ROOTName, Generation,SubName ='SubFileGen',
                 	f.write(' -l $(LYSOL)')	
                 f.write('"\n')	
             
-                f.write("Output  =Results/Out_$(gen)_$(vol)"+".out"+"\n")
+                f.write("Output  =/storage/af/user/greales/simG4/outputs/OutPost_$(gen)_$(vol)"+".out"+"\n")
                
 # f.write("Output  ="+self.OutFolder+self.OutName+str(self.Generation)+"_1.out"+"\n")
             else:
                 f.write('arguments ="-a Generation_$(gen)_$(indv)"\n')
-                f.write("Output  ="+self.OutFolder+self.OutName+"_$(gen)_$(indv)"+".out"+"\n")
+                f.write("Output  ="+OutFolder+OutName+"_$(gen)_$(indv)"+".out"+"\n")
             f.write("Error   = /storage/af/user/greales/simG4/errors/error_job$(Cluster).out\n")
             f.write("Log     = /storage/af/user/greales/simG4/logs/log_job$(Cluster).out\n")
             f.write("requirements = Machine =!= LastRemoteHost\n")
