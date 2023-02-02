@@ -30,6 +30,7 @@ class G4Job:
             print("## HTCondor")
             frm=os.listdir('SubFiles')
             for i in frm:
+            
                 p = subprocess.call(['rm',"SubFiles/"+i])
             #frm=os.listdir('JobFiles')
             #print("### SubFiles")

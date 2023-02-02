@@ -85,6 +85,7 @@ class NSGA2Utils:
                 j+=1
                 pop.append(individual)
         f.Close()
+        print('End of ROOT population')
         return pop
 
     def fast_nondominated_sort(self, population):
