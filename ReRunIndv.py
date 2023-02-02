@@ -168,7 +168,7 @@ def SubWrite(features, ntimes, Vol,  ROOTName, Generation,SubName ='SubFileGen',
             f.write("+RunAsOwner = True\n")
             f.write("+InteractiveUser = True\n")
             f.write("+SingularityBindCVMFS = True\n")
-            f.write("+SingularityImage = "+Singularity+"\n")
+            f.write(Singularity+"\n")
             f.write("x509userproxy = $ENV(X509_USER_PROXY)\n")
             f.write("RequestDisk = 2000000\n")
             f.write("RequestMemory = 2000\n")
