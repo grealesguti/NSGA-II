@@ -18,7 +18,19 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import splrep, splev,splprep
 from scipy.interpolate import BSpline
 import math
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("folder", help="The name of the folder to be used.")
+    parser.add_argument("generation",type=int, help="The number of the generation to plot.")
+    parser.add_argument("--Ysym","-y", type=int, default=0, help="Y symmetry point.")
+    parser.add_argument("--LYSOL","-l", type=int, default=0, help="Y symmetry point.")
+    parser.add_argument("--save","-sv", type=int, default=1, help="Y symmetry point.")
+    parser.add_argument("--Shape","-sh", type=int, default=0, help="Y symmetry point.")
+    parser.add_argument("--ParetoFrontier","-pf", type=int, default=0, help="Y symmetry point.")
+    parser.add_argument("--Filter","-f", type=int, default=0, help="Y symmetry point.")
+    parser.add_argument("--LaunchIndv","-t", type=int, default=0, help="Y symmetry point.")
 
+    return parser.parse_args()
 def delete_file(file_path):
     if os.path.exists(file_path):
         os.remove(file_path)
@@ -53,6 +65,33 @@ def SplinePts_NoYSym(num_vars,vars_tuple,Zhalf,Yhalf,indv):
 	for i in range(Znode+1):
 			xbot.append(-Zhalf+Zhalf/Znode*i)
 			ybot.append(-vars_tuple[indv][i+Znode+1]*Yhalf)
+	for i in range(Znode):
+			xbot.append(-Zhalf+Zhalf/Znode*(i+Znode+1))
+			ybot.append(ybot[Znode-i-1])
+	
+	return xtop,ytop,xbot,ybot
+	
+def SplinePts_NoYSym_L(num_vars,vars_tuple,Yhalf,indv):
+	xtop=[]
+	ytop=[]
+	xbot=[]
+	ybot=[]	
+	Znode = int(num_vars/2)-1
+	### top spline points
+	vars_tuplei=vars_tuple[indv]
+	Zhalf=vars_tuplei[0]
+	vars_tuplei=vars_tuplei[1:len(vars_tuplei)+1]
+	for i in range(Znode+1):
+			xtop.append(-Zhalf+Zhalf/Znode*i)
+			ytop.append(vars_tuplei[i]*Yhalf)
+	for i in range(Znode):
+			xtop.append(-Zhalf+Zhalf/Znode*(i+Znode+1))
+			ytop.append(ytop[Znode-i-1])
+		
+	### bottop spline points	
+	for i in range(Znode+1):
+			xbot.append(-Zhalf+Zhalf/Znode*i)
+			ybot.append(-vars_tuplei[i+Znode+1]*Yhalf)
 	for i in range(Znode):
 			xbot.append(-Zhalf+Zhalf/Znode*(i+Znode+1))
 			ybot.append(ybot[Znode-i-1])
@@ -120,19 +159,6 @@ def GetRootVariables(gen_file):
 		
 	return num_indv,num_vars,obj1,obj2,vars_tuple,lstvars
 
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("folder", help="The name of the folder to be used.")
-    parser.add_argument("generation",type=int, help="The number of the generation to plot.")
-    parser.add_argument("--Ysym","-y", type=int, default=0, help="Y symmetry point.")
-    parser.add_argument("--Length","-l", type=int, default=0, help="Y symmetry point.")
-    parser.add_argument("--save","-sv", type=int, default=1, help="Y symmetry point.")
-    parser.add_argument("--Shape","-sh", type=int, default=0, help="Y symmetry point.")
-    parser.add_argument("--ParetoFrontier","-pf", type=int, default=0, help="Y symmetry point.")
-    parser.add_argument("--Filter","-f", type=int, default=0, help="Y symmetry point.")
-    parser.add_argument("--LaunchIndv","-t", type=int, default=0, help="Y symmetry point.")
-
-    return parser.parse_args()
     
 def find_strings_containing_substring(strings, substring):
     matching_strings = []
@@ -310,7 +336,12 @@ def main():
 			### get spline control points for different scenarions
 			if(args.Ysym==1):
 				print("NoYSym")
-				xtop,ytop,xbot,ybot = SplinePts_NoYSym(num_vars,vars_tuple,Zhalf,Yhalf,indv)
+				if (args.LYSOL==1):
+					print("LYSOL")
+					print("Length:",vars_tuple)
+					xtop,ytop,xbot,ybot = SplinePts_NoYSym_L(num_vars-1,vars_tuple,Yhalf,indv)
+				else:
+					xtop,ytop,xbot,ybot = SplinePts_NoYSym(num_vars,vars_tuple,Zhalf,Yhalf,indv)
 				# else we have a symmetrical case in Y!!!
 			else:
 				print('WARNIGN: Set NoYSym, not other option yet available')
@@ -399,8 +430,12 @@ def main():
 			### get spline control points for different scenarions
 			if(args.Ysym==1):
 				print("NoYSym")
-				xtop,ytop,xbot,ybot = SplinePts_NoYSym(num_vars,vars_tuple,Zhalf,Yhalf,indv)
-				# else we have a symmetrical case in Y!!!
+				if (args.LYSOL==1):
+					print("LYSOL")
+					print("Length:",vars_tuple)
+					xtop,ytop,xbot,ybot = SplinePts_NoYSym_L(num_vars-1,vars_tuple,Yhalf,indv)
+				else:
+					xtop,ytop,xbot,ybot = SplinePts_NoYSym(num_vars,vars_tuple,Zhalf,Yhalf,indv)				
 			else:
 				print('WARNIGN: Set NoYSym, not other option yet available')
 			
