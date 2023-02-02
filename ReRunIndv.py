@@ -218,7 +218,7 @@ def main():
 	### Initializations
 	print('Initializations')
 	args = parse_args()		# Parse arguments
-	gmsh.initialize()		
+	#gmsh.initialize()		
 	root_folder=args.folder	
 	gen=args.generation
 	folder_path='ROOT/'+root_folder # add path to ROOT/
