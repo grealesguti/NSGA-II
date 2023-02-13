@@ -25,8 +25,11 @@ class Population:
         t = TTree('tPopulation','tree with individual features')
         t2 = TTree('tObjectives','tree with individual objectives')
         t3 = TTree('tFronts','tree with individual ranks')
+        t4 = TTree('tidx','tree with individual ranks')
         maxn = 10
         n = array('i',[0])
+        no = array('i',[0])
+        ni = array('i',[0])
         n1 = array('i',[0])
         d = array('d',[0])
         obj = array('d',[0])
@@ -37,9 +40,14 @@ class Population:
         t2.Branch('objectives',obj,'objectives/D')
         t3.Branch('ind',n1,'ind/I')
         t3.Branch('rank',front,'rank/I')
+        t4.Branch('i',n,'rank/I')
+        t4.Branch('idx',ni,'rank/I')
         c=0
         for i in self.population:
             n[0] = c
+            no[0] = i.idx
+            ni[0] = i.idx
+            t4.Fill()
             for j in i.features:
                 d[0]= float(j)
                 #print("Indv: ",c," Feat: ", j)
