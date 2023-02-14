@@ -31,6 +31,7 @@ class Population:
         no = array('i',[0])
         ni = array('i',[0])
         n1 = array('i',[0])
+        gen = array('i',[0])
         d = array('d',[0])
         obj = array('d',[0])
         front = array('i',[0])
@@ -42,11 +43,13 @@ class Population:
         t3.Branch('rank',front,'rank/I')
         t4.Branch('i',n,'rank/I')
         t4.Branch('idx',ni,'rank/I')
+        t4.Branch('gen',gen,'rank/I')
         c=0
         for i in self.population:
             n[0] = c
             no[0] = i.idx
             ni[0] = i.idx
+            gen[0] = i.Generation
             t4.Fill()
             for j in i.features:
                 d[0]= float(j)
