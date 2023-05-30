@@ -98,6 +98,55 @@ def SplinePts_NoYSym_L(num_vars,vars_tuple,Yhalf,indv):
 	
 	return xtop,ytop,xbot,ybot
 
+def SplinePts_YSym_L(num_vars,vars_tuple,Yhalf,indv):
+	xtop=[]
+	ytop=[]
+	xbot=[]
+	ybot=[]	
+	Znode = int(num_vars)-1
+	### top spline points
+	vars_tuplei=vars_tuple[indv]
+	Zhalf=vars_tuplei[0]
+	vars_tuplei=vars_tuplei[1:len(vars_tuplei)+1]
+	print(" tuple indv: ",vars_tuplei)
+	for i in range(Znode+1):
+			xtop.append(-Zhalf+Zhalf/Znode*i)
+			ytop.append(vars_tuplei[i]*Yhalf)
+	for i in range(Znode):
+			xtop.append(-Zhalf+Zhalf/Znode*(i+Znode+1))
+			ytop.append(ytop[Znode-i-1])
+	
+	xbot=xtop
+	ybot = [-i for i in ytop]
+	### bottop spline points	
+
+	
+	return xtop,ytop,xbot,ybot
+	
+def SplinePts_YSym(num_vars,vars_tuple,Yhalf,Zhalf,indv):
+	xtop=[]
+	ytop=[]
+	xbot=[]
+	ybot=[]	
+	Znode = int(num_vars)-1
+	### top spline points
+	vars_tuplei=vars_tuple[indv]
+	Zhalf=vars_tuplei[0]
+	vars_tuplei=vars_tuplei[0:len(vars_tuplei)+1]
+	for i in range(Znode+1):
+			xtop.append(-Zhalf+Zhalf/Znode*i)
+			ytop.append(vars_tuplei[i]*Yhalf)
+	for i in range(Znode):
+			xtop.append(-Zhalf+Zhalf/Znode*(i+Znode+1))
+			ytop.append(ytop[Znode-i-1])
+	
+	xbot=xtop
+	ybot = [-i for i in ytop]
+	### bottop spline points	
+
+	
+	return xtop,ytop,xbot,ybot
+
 def plot_line_from_points(x_points, y_points):
 	if len(x_points) != len(y_points):
 		raise ValueError("x_points and y_points must have the same length")
@@ -344,7 +393,14 @@ def main():
 					xtop,ytop,xbot,ybot = SplinePts_NoYSym(num_vars,vars_tuple,Zhalf,Yhalf,indv)
 				# else we have a symmetrical case in Y!!!
 			else:
-				print('WARNIGN: Set NoYSym, not other option yet available')
+				print("YSym")
+				if (args.LYSOL==1):
+					print("LYSOL")
+					print("Length:",vars_tuple)
+					xtop,ytop,xbot,ybot = SplinePts_YSym_L(num_vars-1,vars_tuple,Yhalf,indv)
+				else:
+					xtop,ytop,xbot,ybot = SplinePts_YSym(num_vars,vars_tuple,Yhalf,Zhalf,indv)
+				# else we have a symmetrical case in Y!!!
 			
 			### plot and save	
 			fig, ax = plt.subplots()
@@ -432,25 +488,37 @@ def main():
 				print("NoYSym")
 				if (args.LYSOL==1):
 					print("LYSOL")
-					print("Length:",vars_tuple)
+					#print("Length:",vars_tuple)
 					xtop,ytop,xbot,ybot = SplinePts_NoYSym_L(num_vars-1,vars_tuple,Yhalf,indv)
 				else:
 					xtop,ytop,xbot,ybot = SplinePts_NoYSym(num_vars,vars_tuple,Zhalf,Yhalf,indv)				
 			else:
-				print('WARNIGN: Set NoYSym, not other option yet available')
+				print("YSym")
+				if (args.LYSOL==1):
+					print("LYSOL")
+					#print("Length:",vars_tuple)
+					xtop,ytop,xbot,ybot = SplinePts_YSym_L(num_vars-1,vars_tuple,Yhalf,indv)
+				else:
+					xtop,ytop,xbot,ybot = SplinePts_YSym(num_vars,vars_tuple,Yhalf,Zhalf,indv)
 			
 			### plot and save	
 			fig, ax = plt.subplots()
-			try:
-				Plt_Crystal(xtop,ytop,xbot,ybot,pictures_folder,1)	
-				if(args.save==1):
+			#try:
+			print("vars: ",indv," ",vars_tuple[indv])
+			print("n_vars: ",num_vars)
+			print(xtop)
+			print(ytop)
+			print(xbot)
+			print(ybot)
+			Plt_Crystal(xtop,ytop,xbot,ybot,pictures_folder,1)	
+			if(args.save==1):
 					imagename="LYSO_Vol_"+str(round(obj2[indv],1))+"_LC_"+str(round(abs(obj1[indv]),1))
 					save_name=pictures_folder_filter+imagename
 					print(save_name)
 					plt.savefig(save_name, format='png', dpi=300, bbox_inches='tight')
-			except:
+			"""except:
 				imagename="LYSO_Vol_"+str(round(obj2[indv],1))+"_LC_"+str(round(abs(obj1[indv]),1))
-				print("### ERROR: ",pictures_folder_filter+imagename)		
+				print("### ERROR: ",pictures_folder_filter+imagename)*/		"""
 	###################
 	### Launch Indv ###
 	###################
