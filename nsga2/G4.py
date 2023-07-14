@@ -23,6 +23,8 @@ class G4Job:
                 self.SiPMS = G4input.SiPMS
                 self.LYSOL = G4input.LYSOL
                 self.Singularity = G4input.Singularity
+                self.SZloc = False
+
 
         def CleanOut(self):
             print("### Cleaning:")
@@ -51,7 +53,7 @@ class G4Job:
         def SubWrite(self , Children=[]):
             print("### Writting Sub File:")
             nvar=len(Children[0].features)
-            nvar+=-1
+            nvar=4
             f = open("SubFiles/"+self.SubName+"_"+str(self.Generation)+".sub", "a")
             f.write("Universe = vanilla\n")
             f.write("executable = "+self.CurrentFolder+"JobFiles/"+self.JobName+"\n")
@@ -62,6 +64,9 @@ class G4Job:
                 	f.write(' -t $(SiPM)')
                 if(self.LYSOL):
                 	f.write(' -l $(LYSOL)')	
+                if(self.SZloc):
+                	f.write(' -p $(SZloc)')	
+                
                 f.write('"\n')	
             
                 f.write("Output  ="+self.OutFolder+self.OutName+"_$(gen)_$(indv)"+".out"+"\n")
@@ -70,8 +75,8 @@ class G4Job:
             else:
                 f.write('arguments ="-a Generation_$(gen)_$(indv)"\n')
                 f.write("Output  ="+self.OutFolder+self.OutName+"_$(gen)_$(indv)"+".out"+"\n")
-            f.write("Error   = /storage/af/user/greales/simG4/errors/error_job$(Cluster).out\n")
-            f.write("Log     = /storage/af/user/greales/simG4/logs/log_job$(Cluster).out\n")
+            f.write("Error   = /storage/af/user/greales/simG4/errors/error_NSGA_$(gen)_$(indv).out\n")
+            f.write("Log     = /storage/af/user/greales/simG4/logs/log_NSGA_$(gen)_$(indv).out\n")
             f.write("requirements = Machine =!= LastRemoteHost\n")
             f.write("WHEN_TO_TRANSFER_OUTPUT = ON_EXIT_OR_EVICT\n")
             f.write('+JobQueue = "Short"\n')
@@ -99,6 +104,9 @@ class G4Job:
                 	f.write(', SiPM')
                 if(self.LYSOL):
                 	f.write(', LYSOL')
+                if(self.SZloc):
+                	f.write(', SZloc')
+                
                 f.write(' from (\n')	
                 featinit=0
                 if(self.LYSOL):
@@ -113,6 +121,10 @@ class G4Job:
                         f.write(', '+str(i.features[featinit]*100))
                     if(self.LYSOL):
                         f.write(', '+str(i.features[0]))
+                    if(self.SZloc):
+                        f.write(', '+str(i.features[1]))
+
+
                     f.write('\n')
 
                     checkoutnames.append(self.OutFolder+self.OutName+"_"+str(i.Generation)+"_"+str(i.idx)+".out")
@@ -149,6 +161,7 @@ class G4Job:
                     tc+=wait
                     if(tc>maxwait):
                         print("\n!!! Time Limit !!!")
+                        subprocess.call(["condor_rm","greales"])
                         subprocess.call(["date"])
                         quit()
                         return 1
