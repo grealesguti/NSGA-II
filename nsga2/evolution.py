@@ -9,6 +9,7 @@ class Evolution:
         self.TierII=TierII
         self.utils = NSGA2Utils(problem,G4InputClass, num_of_individuals, num_of_tour_particips, tournament_prob, crossover_param, mutation_param,TierII=self.TierII,init=init_evo,Generation=Generation_evo)
         self.population = None
+        self.Generation = Generation_evo
         self.num_of_generations = num_of_generations
         self.on_generation_finished = []
         self.num_of_individuals = num_of_individuals

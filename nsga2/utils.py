@@ -79,12 +79,22 @@ class NSGA2Utils:
                 for i in range(nObj):
                     arr.append(obj[j*nObj+i])
                     #individual.objectives = obj[j*nIndv+i]
-                individual.objectives=arr    
+                #individual.objectives=arr    
                 print('objectives: ',arr)
                 i=i+nFeat
                 j+=1
                 pop.append(individual)
         f.Close()
+        if self.TierII==1:
+            print("TierII Launch jobs")
+            g4job = G4Job(self.G4input,Generation=self.Generation)
+            g4job.CleanOut()
+            print("Cleaned")
+            g4job.TierIIRun(pop.population)
+            print("Run")
+        for indv in pop.population:
+            self.problem.calculate_objectives(indv)
+
         print('End of ROOT population')
         return pop
 

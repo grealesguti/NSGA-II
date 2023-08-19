@@ -34,6 +34,11 @@ class G4Job:
             for i in frm:
             
                 p = subprocess.call(['rm',"SubFiles/"+i])
+            #p1 = subprocess.call(['rm',"../../../Results/Generation*"])
+            #p2 = subprocess.call(['rm',"../../../../outputs/Out_NSGA*"])
+            #p2 = subprocess.call(['rm',"../../../../logs/log_NSGA*"])
+            #p2 = subprocess.call(['rm',"../../../../errors/error_NSGA*"])
+            
             #frm=os.listdir('JobFiles')
             #print("### SubFiles")
             #for i in frm:
@@ -41,6 +46,7 @@ class G4Job:
             frm0=os.listdir('../../../../outputs')
             for i in frm0:
                 if (i.startswith(self.OutName)):
+                    print(i)
                     p = subprocess.call(['rm','../../../../outputs/'+i])
             #frm=os.listdir('../../../Results')
             print("!!!! Be sure to delete all Generation.root files from the G4 folder")
@@ -49,7 +55,7 @@ class G4Job:
             #    if (i.startswith(self.ROOTName)):
             #        p = subprocess.call(['rm','../../../Results/'+i])
             #return 0
-
+            print("cleaned")
         def SubWrite(self , Children=[]):
             print("### Writting Sub File:")
             nvar=len(Children[0].features)
@@ -155,7 +161,7 @@ class G4Job:
                     if(self.CheckIndv(outnames)):
                         print("\n### Files Found.")
                         subprocess.call(["date"])
-                        time.sleep(wait*5)
+                        time.sleep(15)
                         return 0
                     time.sleep(wait)
                     tc+=wait
